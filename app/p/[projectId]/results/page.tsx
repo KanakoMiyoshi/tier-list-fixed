@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../../src/lib/supabaseClient";
 
 type TierKey = "S" | "A" | "B" | "C" | "D";
@@ -57,12 +58,8 @@ function chipList(names: string[]) {
   );
 }
 
-export default function ResultsPage({
-  params,
-}: {
-  params: Promise<{ projectId: string }>;
-}) {
-  const projectId = React.use(params).projectId;
+export default function Page() {
+  const { projectId } = useParams<{ projectId: string }>();
 
   const [images, setImages] = useState<ImgRow[]>([]);
   const [subs, setSubs] = useState<SubmissionRow[]>([]);
@@ -80,10 +77,7 @@ export default function ResultsPage({
           .eq("project_id", projectId)
           .order("sort_order", { ascending: true })
           .order("created_at", { ascending: true }),
-        supabase
-          .from("submissions")
-          .select("*")
-          .eq("project_id", projectId),
+        supabase.from("submissions").select("*").eq("project_id", projectId),
       ]);
 
       if (imgRes.error) throw imgRes.error;
@@ -136,12 +130,22 @@ export default function ResultsPage({
       <div className="panel">
         <div className="topbar">
           <div className="title">
-            <h1 style={{ fontSize: 22, fontWeight: 900 }}>📊 みんなの結果（画像ごと）</h1>
-            <div className="sub">「この画像をSに入れたのは誰？」が見れるやつ</div>
+            <h1 style={{ fontSize: 22, fontWeight: 900 }}>
+              📊 みんなの結果（画像ごと）
+            </h1>
+            <div className="sub">
+              「この画像をSに入れたのは誰？」が見れるやつ
+            </div>
           </div>
           <div className="actions">
-            <a className="btn" href={`/p/${projectId}`}>Tierへ戻る</a>
-            <button className="btn" onClick={() => void loadAll()} disabled={loading}>
+            <a className="btn" href={`/p/${projectId}`}>
+              Tierへ戻る
+            </a>
+            <button
+              className="btn"
+              onClick={() => void loadAll()}
+              disabled={loading}
+            >
               {loading ? "Loading..." : "Reload"}
             </button>
           </div>
@@ -151,7 +155,9 @@ export default function ResultsPage({
           提出数：{subs.length}　/　画像数：{images.length}
         </div>
 
-        {msg ? <div style={{ padding: "8px 14px", fontSize: 12 }}>{msg}</div> : null}
+        {msg ? (
+          <div style={{ padding: "8px 14px", fontSize: 12 }}>{msg}</div>
+        ) : null}
 
         <div style={{ padding: 14, display: "grid", gap: 12 }}>
           {loading ? (
@@ -184,7 +190,15 @@ export default function ResultsPage({
                     }}
                   />
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontWeight: 900, fontSize: 16, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+                    <div
+                      style={{
+                        fontWeight: 900,
+                        fontSize: 16,
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                      }}
+                    >
                       {img.name}
                     </div>
                     <div style={{ fontSize: 12, opacity: 0.8 }}>
@@ -195,10 +209,25 @@ export default function ResultsPage({
 
                 <div style={{ marginTop: 12, display: "grid", gap: 10 }}>
                   {TIERS.map((tier) => (
-                    <details key={tier} style={{ background: "rgba(0,0,0,.12)", borderRadius: 14, padding: 10 }}>
-                      <summary style={{ cursor: "pointer", listStyle: "none", fontWeight: 900 }}>
+                    <details
+                      key={tier}
+                      style={{
+                        background: "rgba(0,0,0,.12)",
+                        borderRadius: 14,
+                        padding: 10,
+                      }}
+                    >
+                      <summary
+                        style={{
+                          cursor: "pointer",
+                          listStyle: "none",
+                          fontWeight: 900,
+                        }}
+                      >
                         {tier}：{stat[tier].length}人
-                        <span style={{ fontWeight: 500, opacity: 0.8 }}>（クリックで名前）</span>
+                        <span style={{ fontWeight: 500, opacity: 0.8 }}>
+                          （クリックで名前）
+                        </span>
                       </summary>
                       <div style={{ marginTop: 8 }}>{chipList(stat[tier])}</div>
                     </details>
@@ -210,7 +239,11 @@ export default function ResultsPage({
 
           {!loading && images.length === 0 ? (
             <div style={{ fontSize: 12, opacity: 0.8 }}>
-              画像がないよ！ <a className="btn" href={`/p/${projectId}/manage`}>Manage</a> から追加してね
+              画像がないよ！{" "}
+              <a className="btn" href={`/p/${projectId}/manage`}>
+                Manage
+              </a>{" "}
+              から追加してね
             </div>
           ) : null}
         </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../src/lib/supabaseClient";
 import {
   getOrCreateParticipantId,
@@ -244,7 +245,10 @@ function TierSelectModal({
               key={id}
               style={{ display: "flex", gap: 8, alignItems: "center" }}
             >
-              <img src={proxyImg(it.imageUrl)} style={{ width: 48, height: 48 }} />
+              <img
+                src={proxyImg(it.imageUrl)}
+                style={{ width: 48, height: 48 }}
+              />
               <div style={{ flex: 1 }}>{it.name}</div>
               <button disabled={i === 0} onClick={() => onMove(i, i - 1)}>
                 ↑
@@ -265,7 +269,7 @@ function TierSelectModal({
         <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
           {items.map((it) => (
             <button key={it.id} className="btn" onClick={() => onSelect(it.id)}>
-            <img src={proxyImg(it.imageUrl)} style={{ width: 60 }} />
+              <img src={proxyImg(it.imageUrl)} style={{ width: 60 }} />
               <div>{it.name}</div>
             </button>
           ))}
@@ -279,12 +283,8 @@ function TierSelectModal({
   );
 }
 
-export default function Page({
-  params,
-}: {
-  params: Promise<{ projectId: string }>;
-}) {
-  const projectId = React.use(params).projectId;
+export default function Page() {
+  const { projectId } = useParams<{ projectId: string }>();
 
   const captureRef = useRef<HTMLDivElement | null>(null);
 

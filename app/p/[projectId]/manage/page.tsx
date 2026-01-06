@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useState } from "react";
+import { useParams } from "next/navigation";
 import { supabase } from "../../../../src/lib/supabaseClient";
 
 type ImgRow = {
@@ -22,12 +23,8 @@ function uid(prefix = "img") {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;
 }
 
-export default function ManagePage({
-  params,
-}: {
-  params: Promise<{ projectId: string }>;
-}) {
-  const projectId = React.use(params).projectId;
+export default function Page() {
+  const { projectId } = useParams<{ projectId: string }>();
 
   const [projectTitle, setProjectTitle] = useState("");
 
@@ -38,7 +35,11 @@ export default function ManagePage({
   const [msg, setMsg] = useState("");
 
   async function loadProject() {
-    const res = await supabase.from("projects").select("*").eq("id", projectId).maybeSingle();
+    const res = await supabase
+      .from("projects")
+      .select("*")
+      .eq("id", projectId)
+      .maybeSingle();
     if (res.error) {
       setMsg(`プロジェクト読み込みエラー: ${res.error.message}`);
       return;
@@ -47,7 +48,9 @@ export default function ManagePage({
       setProjectTitle((res.data as ProjectRow).title ?? "");
     } else {
       // 存在しないなら作っておく（title空でOK）
-      const ins = await supabase.from("projects").insert({ id: projectId, title: "" });
+      const ins = await supabase
+        .from("projects")
+        .insert({ id: projectId, title: "" });
       if (ins.error) setMsg(`プロジェクト作成エラー: ${ins.error.message}`);
     }
   }
@@ -124,7 +127,9 @@ export default function ManagePage({
 
     try {
       const base =
-        rows.length === 0 ? 1 : Math.max(...rows.map((r) => r.sort_order ?? 0)) + 1;
+        rows.length === 0
+          ? 1
+          : Math.max(...rows.map((r) => r.sort_order ?? 0)) + 1;
 
       const trimmed = overrideName.trim();
 
@@ -134,8 +139,8 @@ export default function ManagePage({
           trimmed.length === 0
             ? f.name
             : files.length === 1
-              ? trimmed
-              : `${trimmed}_${i + 1}`;
+            ? trimmed
+            : `${trimmed}_${i + 1}`;
 
         await uploadOne(f, name, base + i);
       }
@@ -152,7 +157,10 @@ export default function ManagePage({
   }
 
   async function removeRow(id: string) {
-    if (!confirm("この画像を削除する？（DB行のみ。Storageファイル削除は未対応）")) return;
+    if (
+      !confirm("この画像を削除する？（DB行のみ。Storageファイル削除は未対応）")
+    )
+      return;
     setBusy(true);
     setMsg("");
     try {
@@ -175,14 +183,18 @@ export default function ManagePage({
             <div className="sub">タイトル設定 & 画像登録</div>
           </div>
           <div className="actions">
-            <a className="btn" href={`/p/${projectId}`}>Tierへ戻る</a>
+            <a className="btn" href={`/p/${projectId}`}>
+              Tierへ戻る
+            </a>
           </div>
         </div>
 
         <div style={{ padding: 12, display: "grid", gap: 14 }}>
           {/* タイトル設定 */}
           <div className="panel" style={{ padding: 12, borderRadius: 16 }}>
-            <div style={{ fontWeight: 900, marginBottom: 6 }}>Tier表のタイトル（admin入力）</div>
+            <div style={{ fontWeight: 900, marginBottom: 6 }}>
+              Tier表のタイトル（admin入力）
+            </div>
             <div style={{ display: "grid", gap: 8 }}>
               <input
                 className="btn"
@@ -191,11 +203,16 @@ export default function ManagePage({
                 placeholder="例）推しキャラ / おすすめ映画 / 最強ラーメン など"
                 onChange={(e) => setProjectTitle(e.target.value)}
               />
-              <button className="btn" onClick={() => void saveProject()} disabled={busy}>
+              <button
+                className="btn"
+                onClick={() => void saveProject()}
+                disabled={busy}
+              >
                 {busy ? "保存中..." : "タイトルを保存"}
               </button>
               <div style={{ fontSize: 12, opacity: 0.8 }}>
-                見出しは：🌙✨ [参加者名]が作る最強の「{projectTitle || "（ここ）"}」Tier 表
+                見出しは：🌙✨ [参加者名]が作る最強の「
+                {projectTitle || "（ここ）"}」Tier 表
               </div>
             </div>
           </div>
@@ -219,15 +236,26 @@ export default function ManagePage({
               onChange={(e) => setFiles(Array.from(e.target.files ?? []))}
             />
 
-            <button className="btn" disabled={!canUpload} onClick={() => void uploadAll()}>
+            <button
+              className="btn"
+              disabled={!canUpload}
+              onClick={() => void uploadAll()}
+            >
               {busy ? "処理中..." : `アップロードして追加（${files.length}件）`}
             </button>
           </div>
 
-          {msg ? <div style={{ fontSize: 12, opacity: 0.85 }}>{msg}</div> : null}
+          {msg ? (
+            <div style={{ fontSize: 12, opacity: 0.85 }}>{msg}</div>
+          ) : null}
 
-          <div style={{ marginTop: 8, fontWeight: 900 }}>登録済み（{rows.length}）</div>
-          <div className="dropzone" style={{ background: "rgba(255,255,255,.5)" }}>
+          <div style={{ marginTop: 8, fontWeight: 900 }}>
+            登録済み（{rows.length}）
+          </div>
+          <div
+            className="dropzone"
+            style={{ background: "rgba(255,255,255,.5)" }}
+          >
             {rows.map((r) => (
               <div key={r.id} style={{ position: "relative" }}>
                 <div className="card" style={{ cursor: "default" }}>
@@ -253,7 +281,8 @@ export default function ManagePage({
           </div>
 
           <div className="hint">
-            ✅ 名前未入力→ファイル名になる／✅ 複数アップ可（prefix入れたら連番）
+            ✅ 名前未入力→ファイル名になる／✅
+            複数アップ可（prefix入れたら連番）
           </div>
         </div>
       </div>
