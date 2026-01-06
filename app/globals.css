@@ -1,26 +1,228 @@
-@import "tailwindcss";
-
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --panel: rgba(255, 255, 255, 0.9);
+  --panel2: rgba(255, 255, 255, 0.74);
+  --border: rgba(0, 0, 0, 0.12);
+  --shadow: 0 14px 34px rgba(0, 0, 0, 0.18);
+  --text: #222;
+  --muted: rgba(0, 0, 0, 0.55);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Hiragino Sans",
+    "Noto Sans JP", "Segoe UI", Arial;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  min-height: 100vh;
+  background-image: url("/bg/space.png");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  color: var(--text);
+}
+
+/* 背景の上に“薄い膜”を敷いて可読性アップ */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.2),
+    rgba(255, 255, 255, 0.08)
+  );
+}
+
+/* ===== Tier UI (Tailwind不要) ===== */
+.tierApp {
+  position: relative;
+  z-index: 1;
+  max-width: 1120px;
+  margin: 0 auto;
+  padding: 18px 14px 46px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid rgba(255, 255, 255, 0.65);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  background: linear-gradient(
+    180deg,
+    rgba(255, 255, 255, 0.96),
+    rgba(255, 255, 255, 0.86)
+  );
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  padding: 14px 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.title {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+.title h1 {
+  font-size: 18px;
+  margin: 0;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.title .sub {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.btn {
+  appearance: none;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: white;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 800;
+  font-size: 13px;
+  cursor: pointer;
+  transition: transform 0.05s ease, box-shadow 0.2s ease;
+}
+.btn:hover {
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.board {
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.tierRow {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.tierLabel {
+  border-radius: 14px;
+  color: white;
+  font-weight: 950;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.06em;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.12);
+}
+
+.dropzone {
+  background: var(--panel2);
+  border: 1px dashed rgba(0, 0, 0, 0.18);
+  border-radius: 16px;
+  min-height: 104px;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-content: flex-start;
+}
+
+.unrankedWrap {
+  padding: 12px;
+  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  background: rgba(255, 255, 255, 0.78);
+}
+
+.unrankedTitle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+.unrankedTitle .left {
+  font-weight: 900;
+}
+.unrankedTitle .right {
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.card {
+  width: 92px;
+  border-radius: 16px;
+  background: white;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  box-shadow: 0 10px 22px rgba(0, 0, 0, 0.12);
+  cursor: grab;
+  user-select: none;
+  touch-action: none;
+}
+.card img {
+  width: 100%;
+  height: 92px;
+  object-fit: cover;
+  display: block;
+}
+.card .name {
+  font-size: 11px;
+  font-weight: 700;
+  padding: 7px 7px 8px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.hint {
+  padding: 12px 14px 14px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* スマホ：ラベルを小さくして横幅確保 */
+@media (max-width: 520px) {
+  .tierRow {
+    grid-template-columns: 58px 1fr;
+  }
+  .card {
+    width: 84px;
+  }
+  .card img {
+    height: 84px;
+  }
 }
