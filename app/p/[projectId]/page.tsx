@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
+
 import { useParams } from "next/navigation";
 import { getSupabase } from "@/lib/supabaseClient";
 import {
@@ -21,6 +22,7 @@ import {
   useDroppable,
   useSensor,
   useSensors,
+  TouchSensor,
   type CollisionDetection,
 } from "@dnd-kit/core";
 import {
@@ -314,7 +316,10 @@ export default function Page() {
   const [tapTier, setTapTier] = useState<TierKey | null>(null);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 6 } })
+    useSensor(PointerSensor, { activationConstraint: { distance: 6 } }),
+    useSensor(TouchSensor, {
+      activationConstraint: { delay: 140, tolerance: 6 },
+    })
   );
 
   useEffect(() => {
@@ -597,12 +602,14 @@ export default function Page() {
           </DndContext>
           <DragOverlay>
             {activeId ? (
-              <div className="card" style={{ transform: "scale(1.05)" }}>
-                <img
-                  src={proxyImg(itemsById[activeId]?.imageUrl ?? "")}
-                  alt={itemsById[activeId]?.name}
-                />
-                <div className="name">{itemsById[activeId]?.name}</div>
+              <div
+                className="card"
+                style={{
+                  transform: "translateY(-22px) scale(1.06)",
+                  boxShadow: "0 16px 36px rgba(0,0,0,.28)",
+                }}
+              >
+                ...
               </div>
             ) : null}
           </DragOverlay>
