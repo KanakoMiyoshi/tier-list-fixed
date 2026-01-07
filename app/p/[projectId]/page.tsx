@@ -31,7 +31,6 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
-const supabase = getSupabase();
 const proxyImg = (url: string) => `/api/img?url=${encodeURIComponent(url)}`;
 
 type TierKey = "S" | "A" | "B" | "C" | "D";
@@ -48,7 +47,6 @@ type ImgRow = {
 };
 type ProjectRow = { id: string; title: string };
 
-console.log("supabase", supabase);
 const TIERS: TierKey[] = ["S", "A", "B", "C", "D"];
 const TIER_COLOR: Record<TierKey, string> = {
   S: "#ff4d6d",
@@ -286,6 +284,7 @@ function TierSelectModal({
 }
 
 export default function Page() {
+  const supabase = useMemo(() => getSupabase(), []);
   const { projectId } = useParams<{ projectId: string }>();
 
   const captureRef = useRef<HTMLDivElement | null>(null);

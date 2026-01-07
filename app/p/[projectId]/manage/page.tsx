@@ -26,6 +26,7 @@ function uid(prefix = "img") {
 }
 
 export default function Page() {
+  const supabase = useMemo(() => getSupabase(), []);
   const { projectId } = useParams<{ projectId: string }>();
 
   const [projectTitle, setProjectTitle] = useState("");

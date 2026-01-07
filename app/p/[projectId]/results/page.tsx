@@ -25,7 +25,6 @@ type SubmissionRow = {
   updated_at?: string;
 };
 
-const supabase = getSupabase();
 type Stat = Record<TierKey, string[]>; // tier -> names[]
 
 function emptyStat(): Stat {
@@ -60,6 +59,7 @@ function chipList(names: string[]) {
 }
 
 export default function Page() {
+  const supabase = useMemo(() => getSupabase(), []);
   const { projectId } = useParams<{ projectId: string }>();
 
   const [images, setImages] = useState<ImgRow[]>([]);
