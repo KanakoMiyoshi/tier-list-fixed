@@ -48,6 +48,7 @@ type ImgRow = {
 };
 type ProjectRow = { id: string; title: string };
 
+console.log("supabase", supabase);
 const TIERS: TierKey[] = ["S", "A", "B", "C", "D"];
 const TIER_COLOR: Record<TierKey, string> = {
   S: "#ff4d6d",
