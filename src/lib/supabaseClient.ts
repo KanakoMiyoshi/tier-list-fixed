@@ -1,3 +1,5 @@
+"use client";
+
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
 
 let _client: SupabaseClient | null = null;
@@ -9,7 +11,7 @@ export function getSupabase(): SupabaseClient {
   const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
   if (!url || !key) {
-    throw new Error("Supabase env vars are missing");
+    throw new Error("Supabase env vars are missing"); // ← これはOK（ただし発生したらデプロイ問題）
   }
 
   _client = createClient(url, key);
