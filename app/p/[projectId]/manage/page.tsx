@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { supabase } from "../../../../src/lib/supabaseClient";
+import { getSupabase } from "@/lib/supabaseClient";
 
 type ImgRow = {
   id: string;
@@ -18,6 +18,8 @@ type ProjectRow = {
   title: string;
   created_at: string;
 };
+
+const supabase = getSupabase();
 
 function uid(prefix = "img") {
   return `${prefix}_${Math.random().toString(36).slice(2, 10)}`;

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { useParams } from "next/navigation";
-import { supabase } from "../../../src/lib/supabaseClient";
+import { getSupabase } from "@/lib/supabaseClient";
 import {
   getOrCreateParticipantId,
   getSavedName,
@@ -31,6 +31,7 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 
+const supabase = getSupabase();
 const proxyImg = (url: string) => `/api/img?url=${encodeURIComponent(url)}`;
 
 type TierKey = "S" | "A" | "B" | "C" | "D";

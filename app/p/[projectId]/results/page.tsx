@@ -2,7 +2,7 @@
 
 import React, { useEffect, useMemo, useState } from "react";
 import { useParams } from "next/navigation";
-import { supabase } from "../../../../src/lib/supabaseClient";
+import { getSupabase } from "@/lib/supabaseClient";
 
 type TierKey = "S" | "A" | "B" | "C" | "D";
 const TIERS: TierKey[] = ["S", "A", "B", "C", "D"];
@@ -25,6 +25,7 @@ type SubmissionRow = {
   updated_at?: string;
 };
 
+const supabase = getSupabase();
 type Stat = Record<TierKey, string[]>; // tier -> names[]
 
 function emptyStat(): Stat {
